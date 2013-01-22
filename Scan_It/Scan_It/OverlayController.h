@@ -15,7 +15,7 @@
 	IBOutlet UILabel 			*textCue;
 	IBOutlet UIBarButtonItem 	*cancelButton;
 	IBOutlet UIBarButtonItem 	*frontButton;
-	IBOutlet UIBarButtonItem 	*flashButton;
+	IBOutlet UIButton 	*torchButton;
 	IBOutlet UIImageView 		*redlaserLogo;
 	
 	BOOL 						viewHasAppeared;

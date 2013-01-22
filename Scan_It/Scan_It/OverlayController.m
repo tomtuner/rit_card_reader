@@ -13,13 +13,6 @@
 
 @implementation OverlayController
 
-- (void) dealloc
-{
-	if ([self isViewLoaded])
-		[self viewDidUnload];
-    
-}
-
 - (void) viewDidLoad
 {
     [super viewDidLoad];
@@ -55,12 +48,12 @@
 	
 	if ([self.parentPicker hasFlash])
 	{
-		[flashButton setEnabled:YES];
-		[flashButton setStyle:UIBarButtonItemStyleBordered];
+		[torchButton setEnabled:YES];
+        [torchButton setSelected:NO];
 		[self.parentPicker turnFlash:NO];
 	} else
 	{
-		[flashButton setEnabled:NO];
+		[torchButton setEnabled:NO];
 	}
     
 	textCue.text = @"";
@@ -119,7 +112,7 @@
 	NSSet *foundBarcodes = [status objectForKey:@"FoundBarcodes"];
 	if ([foundBarcodes count] && viewHasAppeared)
 	{
-		[self.parentPicker doneScanning];
+//		[self.parentPicker doneScanning];
 	}
 	
 	int guidanceLevel = [[status objectForKey:@"Guidance"] intValue];
@@ -142,20 +135,22 @@
 	[self.parentPicker doneScanning];
 }
 
-- (IBAction) flashButtonPressed
+- (IBAction) torchButtonPressed
 {
-	if ([flashButton style] == UIBarButtonItemStyleBordered)
+	if ([torchButton isSelected])
 	{
-		[flashButton setStyle:UIBarButtonItemStyleDone];
-		[self.parentPicker setTorchState:YES];
+		[torchButton setSelected:FALSE];
+		[torchButton setBackgroundColor:[UIColor lightGrayColor]];
+		[self.parentPicker setTorchState:NO];
 	} else
 	{
-		[flashButton setStyle:UIBarButtonItemStyleBordered];
-		[self.parentPicker setTorchState:NO];
+		[torchButton setSelected:TRUE];
+		[torchButton setBackgroundColor:[UIColor whiteColor]];
+		[self.parentPicker setTorchState:YES];
 	}
 }
 
-- (IBAction) rotateButtonPressed
+- (IBAction) doneButtonPressed
 {
 	// Swap the UI orientation.
 	if (self.parentPicker.orientation == UIImageOrientationUp)
