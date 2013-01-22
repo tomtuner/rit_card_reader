@@ -7,13 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <MessageUI/MFMailComposeViewController.h>
 
 #import "RedLaserSDK.h"
 
 #import "OverlayController.h"
 //#import "RLScanOptionsController.h"
 
-@interface ViewController : UIViewController <BarcodePickerControllerDelegate, UITableViewDelegate, UITableViewDataSource> {
+@interface ViewController : UIViewController <BarcodePickerControllerDelegate, UITableViewDelegate, UITableViewDataSource, MFMailComposeViewControllerDelegate> {
 
     NSMutableArray				*scanHistory;
 	IBOutlet UITableView 		*scanHistoryTable;
@@ -23,6 +24,7 @@
 }
 
 -(IBAction)scanButtonPressed;
+-(IBAction)emailButtonPressed;
 
 
 @end

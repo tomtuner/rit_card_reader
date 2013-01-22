@@ -104,10 +104,32 @@
     }];
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+-(IBAction)emailButtonPressed {
+    NSString *csvFullString = [scanHistory componentsJoinedByString:@","];
+    NSLog(@"csvFullString:%@",csvFullString);
+    NSMutableString *csvString = [NSMutableString string];
+    
+    for (int i = 0; i < [scanHistory count]; i++) {
+        [csvString appendString:[[scanHistory objectAtIndex:i] barcodeString]];
+        if ([scanHistory count] > i+1) {
+            [csvString appendString:@", "];
+        }
+    }
+    NSLog(@"csvString:%@",csvString);
+
+    MFMailComposeViewController *mailer = [[MFMailComposeViewController alloc] init];
+    mailer.mailComposeDelegate = self;
+    [mailer setSubject:@"CSV File"];
+    [mailer addAttachmentData:[csvString dataUsingEncoding:NSUTF8StringEncoding]
+                     mimeType:@"text/csv"
+                     fileName:@"Event Attendies.csv"];
+    [self presentViewController:mailer animated:YES completion:nil];    
+}
+
+-(void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult: (MFMailComposeResult)result error:(NSError *)error {
+    
+    [self dismissModalViewControllerAnimated:YES];
+    
 }
 
 #pragma mark - UITableViewDataSource
