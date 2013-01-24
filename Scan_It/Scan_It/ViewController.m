@@ -31,6 +31,12 @@
 		{
     	}
         
+        // Set up swipe from bottom geasture
+        UISwipeGestureRecognizer *swipeUpRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleDoubleLeftSwipe:)];
+        swipeUpRecognizer.numberOfTouchesRequired = 2;
+        swipeUpRecognizer.direction = UISwipeGestureRecognizerDirectionLeft;
+        [self.view addGestureRecognizer:swipeUpRecognizer];
+        
         // We create the BarcodePickerController here so that we can call prepareToScan before
         // the user actually requests a scan.
         pickerController = [[BarcodePickerController alloc] init];
@@ -79,7 +85,7 @@
             NSString *archivePath = [documentsDir stringByAppendingPathComponent:@"ScanHistoryArchive"];
             [NSKeyedArchiver archiveRootObject:scanHistory toFile:archivePath];
             
-            [scanHistoryTable reloadData];
+            [self.scanHistoryTable reloadData];
         }
     }];
 }
@@ -126,9 +132,25 @@
     [self presentViewController:mailer animated:YES completion:nil];    
 }
 
+- (void)handleDoubleLeftSwipe:(UISwipeGestureRecognizer *)recognizer {
+    NSLog(@"Double left Swipe!");
+    [self clearScannedCodes];
+    
+    // Save our new scans out to the archive file
+    NSString *documentsDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,
+                                                                  NSUserDomainMask, YES) objectAtIndex:0];
+    NSString *archivePath = [documentsDir stringByAppendingPathComponent:@"ScanHistoryArchive"];
+    [NSKeyedArchiver archiveRootObject:scanHistory toFile:archivePath];
+}
+
+- (void) clearScannedCodes {
+    [scanHistory removeAllObjects];
+	[self.scanHistoryTable reloadData];
+}
+
 -(void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult: (MFMailComposeResult)result error:(NSError *)error {
     
-    [self dismissModalViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
     
 }
 

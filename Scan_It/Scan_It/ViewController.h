@@ -17,11 +17,12 @@
 @interface ViewController : UIViewController <BarcodePickerControllerDelegate, UITableViewDelegate, UITableViewDataSource, MFMailComposeViewControllerDelegate> {
 
     NSMutableArray				*scanHistory;
-	IBOutlet UITableView 		*scanHistoryTable;
     
 //    RLScanOptionsController 	*optionsController;
 	BarcodePickerController		*pickerController;
 }
+
+@property(nonatomic, strong) IBOutlet UITableView *scanHistoryTable;
 
 -(IBAction)scanButtonPressed;
 -(IBAction)emailButtonPressed;
