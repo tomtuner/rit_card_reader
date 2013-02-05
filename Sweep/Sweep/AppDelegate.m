@@ -1,8 +1,8 @@
 //
 //  AppDelegate.m
-//  Card_Reader
+//  Sweep
 //
-//  Created by Thomas DeMeo on 1/16/13.
+//  Created by Thomas DeMeo on 1/30/13.
 //  Copyright (c) 2013 Thomas DeMeo. All rights reserved.
 //
 
@@ -14,19 +14,12 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    hiJackMgr = [[HiJackMgr alloc] init];
-    [hiJackMgr setDelegate:self];
-    
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
     self.viewController = [[ViewController alloc] initWithNibName:@"ViewController" bundle:nil];
     self.window.rootViewController = self.viewController;
     [self.window makeKeyAndVisible];
     return YES;
-}
-
--(int) receive:(UInt8)data {
-    NSLog(@"Data Recieved: %@", data);
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application

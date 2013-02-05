@@ -2,10 +2,10 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:Scan_It/Scan_It.xcodeproj">
+      location = "group:Sweep/Sweep.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:HiJack.xcodeproj">
+      location = "group:Scan_It/Scan_It.xcodeproj">
    </FileRef>
    <FileRef
       location = "container:Card_Reader/Card_Reader.xcodeproj">

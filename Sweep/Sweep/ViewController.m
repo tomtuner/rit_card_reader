@@ -1,23 +1,24 @@
 //
 //  ViewController.m
-//  Scan_It
+//  Sweep
 //
-//  Created by Thomas DeMeo on 1/17/13.
+//  Created by Thomas DeMeo on 1/30/13.
 //  Copyright (c) 2013 Thomas DeMeo. All rights reserved.
 //
 
 #import "ViewController.h"
 
+
 @interface ViewController ()
 
-- (void) appBecameActive:(NSNotification *) notification;
+
 
 @end
 
 @implementation ViewController
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
-
+    
     if (self = [super initWithNibName:nibBundleOrNil bundle:nibBundleOrNil])
 	{
 		// Load in any saved scan history we may have
@@ -36,11 +37,10 @@
         swipeUpRecognizer.numberOfTouchesRequired = 2;
         swipeUpRecognizer.direction = UISwipeGestureRecognizerDirectionLeft;
         [self.view addGestureRecognizer:swipeUpRecognizer];
+
         
-        // We create the BarcodePickerController here so that we can call prepareToScan before
-        // the user actually requests a scan.
-        pickerController = [[BarcodePickerController alloc] init];
-        [pickerController setDelegate:self];
+//        pickerController = [[BarcodePickerController alloc] init];
+//        [pickerController setDelegate:self];
         
 		if (!scanHistory) {
 			scanHistory = [[NSMutableArray alloc] init];
@@ -53,61 +53,18 @@
 	return self;
 }
 
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
-	[pickerController prepareToScan];
+	// Do any additional setup after loading the view, typically from a nib.
 }
 
-- (void) barcodePickerController:(BarcodePickerController*)picker returnResults:(NSSet *)results
-{
-	[[UIApplication sharedApplication] setStatusBarHidden:NO];
+- (IBAction)scanPressed:(id)sender {
 	
-	// Restore main screen (and restore title bar for 3.0)
-    [self dismissViewControllerAnimated:YES completion:^(void) {
-        if (results && [results count])
-        {
-            NSMutableDictionary *scanSession = [[NSMutableDictionary alloc] init];
-            [scanSession setObject:[NSDate date] forKey:@"Session End Time"];
-            [scanSession setObject:[results allObjects] forKey:@"Scanned Items"];
-            NSLog(@"Keys: %@ Values: %@", [scanSession allKeys], [scanSession allValues]);
-            
-            for( NSObject *bar in [results allObjects] ) {
-                [scanHistory insertObject:bar atIndex:0];
-            }
-
-//            [scanHistory insertObject:scanSession atIndex:0];
-            
-            // Save our new scans out to the archive file
-            NSString *documentsDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,
-                                                                          NSUserDomainMask, YES) objectAtIndex:0];
-            NSString *archivePath = [documentsDir stringByAppendingPathComponent:@"ScanHistoryArchive"];
-            [NSKeyedArchiver archiveRootObject:scanHistory toFile:archivePath];
-            
-            [self.scanHistoryTable reloadData];
-        }
-    }];
-}
-
-// When the app launches or is foregrounded, this will get called via NSNotification
-// to warm up the camera.
-- (void) appBecameActive:(NSNotification *) notification
-{
-	[pickerController prepareToScan];
-}
-
-- (IBAction) scanButtonPressed
-{
-	// Make ourselves an overlay controller and tell the SDK about it.
-	OverlayController *overlayController = [[OverlayController alloc] initWithNibName:@"OverlayController" bundle:nil];
-	[pickerController setOverlay:overlayController];
-	
-	// hide the status bar and show the scanner view
-	[[UIApplication sharedApplication] setStatusBarHidden:YES];
-    [self presentViewController:pickerController animated:YES completion:^(void) {
-        
-    }];
+    BarcodeCaptureViewController *vc = [[BarcodeCaptureViewController alloc] initWithNibName:nil bundle:nil];
+    [self presentModalViewController:vc animated:YES];
 }
 
 -(IBAction)emailButtonPressed {
@@ -122,14 +79,14 @@
         }
     }
     NSLog(@"csvString:%@",csvString);
-
+    
     MFMailComposeViewController *mailer = [[MFMailComposeViewController alloc] init];
     mailer.mailComposeDelegate = self;
     [mailer setSubject:@"CSV File"];
     [mailer addAttachmentData:[csvString dataUsingEncoding:NSUTF8StringEncoding]
                      mimeType:@"text/csv"
                      fileName:@"Event Attendies.csv"];
-    [self presentViewController:mailer animated:YES completion:nil];    
+    [self presentViewController:mailer animated:YES completion:nil];
 }
 
 - (void)handleDoubleLeftSwipe:(UISwipeGestureRecognizer *)recognizer {
@@ -173,18 +130,17 @@
     if (cell == nil)
 	{
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle
-                                       reuseIdentifier:@"BarcodeResult"];
+                                      reuseIdentifier:@"BarcodeResult"];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
 	
 	// Get the barcodeResult that has the data backing this cell
 	NSMutableDictionary *scanSession = [scanHistory objectAtIndex:indexPath.section];
-	BarcodeResult *barcode = [scanHistory objectAtIndex:indexPath.row];
+	ZXResult *barcode = [scanHistory objectAtIndex:indexPath.row];
     
-    cell.textLabel.text = barcode.barcodeString;
+    cell.textLabel.text = barcode.text;
 	
     return cell;
 }
-
 
 @end
